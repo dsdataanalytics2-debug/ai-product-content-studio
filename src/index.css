@@ -1,0 +1,501 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   AI PRODUCT CONTENT STUDIO — DESIGN SYSTEM  ("Nocturne")
+
+   Read APPENDIX K in the plan before changing anything here.
+
+   The short version:
+   - Dark-first. This is a tool people sit in front of for an hour at a time
+     writing ad copy; a bright white canvas is the wrong default.
+   - ONE accent (violet). Colour is information, not decoration: violet means
+     "this is the AI / this is active / this is primary". Green/amber/red are
+     reserved for state, never for emphasis.
+   - Surfaces step up, not out. Depth comes from three background levels plus
+     a hairline divider — not from drop shadows. Shadows are for things that
+     genuinely float (modals, popovers, dropdowns).
+   - Every token below is also exposed under the short alias names the plan's
+     Appendix B code uses (--accent, --border, --text, --bg-hover …), so the
+     primitives can be pasted verbatim from the spec without a rename pass.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --font-body:
+    'Inter', 'Noto Sans Bengali', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-bengali: 'Noto Sans Bengali', 'Nirmala UI', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+}
+
+/* ── Theme: dark (default) ────────────────────────────────────────────────── */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #0a0a0f;
+  --color-surface: #12121a;
+  --color-surface-2: #181822;
+  --color-divider: #26262f;
+
+  --color-text: #ecedf2;
+
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272f;
+  --color-neutral-850: #1d1d26;
+  --color-neutral-900: #15151d;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 6px 20px -4px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 18px 50px -12px rgb(0 0 0 / 0.65);
+
+  --color-success: #4ade80;
+  --color-success-text: #86efac;
+  --color-warning: #fbbf24;
+  --color-warning-text: #fcd34d;
+  --color-danger: #ef4444;
+  --color-danger-text: #fca5a5;
+  --color-info: #3b82f6;
+  --color-info-text: #93c5fd;
+}
+
+/* ── Theme: light ─────────────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #f7f7fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f2f2f6;
+  --color-divider: #e2e2ea;
+
+  --color-text: #17171f;
+
+  --color-neutral-500: #a1a1aa;
+  --color-neutral-600: #c4c4cd;
+  --color-neutral-700: #d9d9e0;
+  --color-neutral-800: #ebebf0;
+  --color-neutral-850: #f1f1f5;
+  --color-neutral-900: #f7f7fa;
+
+  --shadow-sm: 0 1px 2px rgb(16 16 24 / 0.06);
+  --shadow-md: 0 6px 20px -4px rgb(16 16 24 / 0.1);
+  --shadow-lg: 0 18px 50px -12px rgb(16 16 24 / 0.18);
+
+  --color-success: #16a34a;
+  --color-success-text: #15803d;
+  --color-warning: #d97706;
+  --color-warning-text: #b45309;
+  --color-danger: #dc2626;
+  --color-danger-text: #b91c1c;
+  --color-info: #2563eb;
+  --color-info-text: #1d4ed8;
+}
+
+/* ── Accent ───────────────────────────────────────────────────────────────────
+   --color-accent is the ONLY value the Appearance settings write. Everything
+   else is derived with color-mix, so a user-supplied hex produces a complete,
+   coherent ramp instead of a violet button next to violet-ish borders. */
+:root {
+  --color-accent: #8b5cf6;
+
+  --color-accent-300: color-mix(in srgb, var(--color-accent) 68%, white);
+  --color-accent-500: var(--color-accent);
+  --color-accent-700: color-mix(in srgb, var(--color-accent) 74%, black);
+  --color-accent-900: color-mix(in srgb, var(--color-accent) 26%, var(--color-bg));
+
+  /* Tints, named by intent so call sites don't hand-roll color-mix percentages. */
+  --accent-wash: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --accent-wash-strong: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  --accent-hairline: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  --accent-hairline-strong: color-mix(in srgb, var(--color-accent) 42%, transparent);
+
+  /* Text emphasis ladder. Four steps, no more — if you need a fifth you are
+     solving a hierarchy problem with opacity. */
+  --text-strong: var(--color-text);
+  --text-body: color-mix(in srgb, var(--color-text) 86%, transparent);
+  --text-dim: color-mix(in srgb, var(--color-text) 58%, transparent);
+  --text-faint: color-mix(in srgb, var(--color-text) 40%, transparent);
+
+  --bg-hover: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --bg-active: color-mix(in srgb, var(--color-text) 10%, transparent);
+
+  /* Aliases for the Appendix B primitive code, pasted as-written. */
+  --accent: var(--color-accent);
+  --border: var(--color-divider);
+  --text: var(--color-text);
+  --bg-primary: var(--color-bg);
+  --danger: var(--color-danger);
+
+  --font-scale: 1;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  font-size: calc(16px * var(--font-scale));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Bengali needs more leading than Latin at the same size — conjuncts and the
+   matra line above the glyph collide otherwise. Applied by [lang], so it
+   follows the content instead of the component. */
+[lang='bn'] {
+  font-family: var(--font-bengali);
+  line-height: 1.85;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: var(--accent-hairline-strong);
+  color: var(--color-text);
+}
+
+/* Focus: one ring, everywhere, keyboard-only. Never remove it. The pre-ship
+   checklist has a keyboard-only pass and this is what makes it survivable. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-700);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-600);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-accent-300);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Appendix B motion guard. Keep this last-ish so it wins. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────────── */
+@keyframes acs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes acs-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes acs-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes acs-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 30px color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+}
+@keyframes acs-wave {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@utility animate-spin-slow {
+  animation: acs-spin 0.8s linear infinite;
+}
+@utility animate-fade-up {
+  animation: acs-fade-up 0.22s ease-out both;
+}
+@utility animate-glow {
+  animation: acs-glow 2.4s ease-in-out infinite;
+}
+@utility animate-wave {
+  animation: acs-wave 0.9s ease-in-out infinite;
+}
+
+/* ── Primitive classes ────────────────────────────────────────────────────────
+   These back the React components in components/ui. They live in CSS rather
+   than as Tailwind strings so that the *shape* of a button (radius, padding,
+   focus ring, transition) is defined once and cannot drift between sessions —
+   which is the entire point of Appendix B. */
+@layer components {
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-xl);
+  }
+  .elev-sm {
+    box-shadow: var(--shadow-sm);
+  }
+  .elev-md {
+    box-shadow: var(--shadow-md);
+  }
+  .elev-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      opacity 0.15s ease;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-accent-700);
+  }
+
+  .btn-secondary {
+    background: var(--color-surface-2);
+    border-color: var(--color-divider);
+    color: var(--text-body);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--color-text);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--color-text);
+  }
+
+  .btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-danger) 82%, black);
+  }
+
+  .input {
+    width: 100%;
+    background: var(--color-neutral-900);
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.625rem;
+    color: var(--color-text);
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease;
+  }
+  .input::placeholder {
+    color: var(--text-faint);
+  }
+  .input:hover:not(:disabled):not(:focus) {
+    border-color: var(--color-neutral-700);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--accent-wash);
+  }
+  .input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .input-error,
+  .input-error:focus {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 12%, transparent);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .tag-neutral {
+    background: var(--color-neutral-800);
+    color: var(--text-dim);
+    border-color: var(--color-divider);
+  }
+  .tag-outline {
+    background: transparent;
+    color: var(--text-dim);
+    border-color: var(--color-divider);
+  }
+  .tag-accent {
+    background: var(--accent-wash);
+    color: var(--color-accent-300);
+    border-color: var(--accent-hairline);
+  }
+  .tag-success {
+    background: color-mix(in srgb, var(--color-success) 11%, transparent);
+    color: var(--color-success-text);
+    border-color: color-mix(in srgb, var(--color-success) 22%, transparent);
+  }
+  .tag-warning {
+    background: color-mix(in srgb, var(--color-warning) 11%, transparent);
+    color: var(--color-warning-text);
+    border-color: color-mix(in srgb, var(--color-warning) 22%, transparent);
+  }
+  .tag-danger {
+    background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+    color: var(--color-danger-text);
+    border-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
+  }
+
+  /* Section eyebrow — the 10px uppercase tracked label that separates groups
+     inside a panel. Used everywhere instead of nested headings. */
+  .eyebrow {
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .eyebrow-accent {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--color-divider);
+    border: 0;
+  }
+
+  .sk-line {
+    background: var(--color-neutral-800);
+    border-radius: var(--radius-md);
+    animation: acs-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* Scrollable regions inside a flex column need this pair or they grow the
+     parent instead of scrolling. It is the single most repeated three lines in
+     the app, so it gets a name. */
+  .scroll-y {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+@utility text-dim {
+  color: var(--text-dim);
+}
+@utility text-faint {
+  color: var(--text-faint);
+}
+@utility text-body {
+  color: var(--text-body);
+}
+
+/* Print: the shot list and script are things people take to a shoot. */
+@media print {
+  :root {
+    --color-bg: #fff;
+    --color-surface: #fff;
+    --color-surface-2: #fff;
+    --color-text: #000;
+    --color-divider: #bbb;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "ai-content-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "AI Product Content Studio — WooCommerce product → short-form video script, Bengali/English/Banglish",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "docx": "^9.5.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.18.1",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "tailwindcss": "^4.1.13",
+    "vite": "^7.1.5"
+  }
+}
